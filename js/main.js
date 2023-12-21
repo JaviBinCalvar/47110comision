@@ -107,13 +107,42 @@ formsubmit.addEventListener("submit", (e) =>{
 
 
 
+function agregarProdEnLs (producto , cantidad) {
+    const porductoASumarse {
+        nombre: producto.nombre,
+        precio:  producto.precio,
+        cantidad: parseInt(cantidad),
+    };
+    const ls = localStorage.getItem ("carrito");
 
+    if (ls === null) {
+        const carrito =[porductoASumarse];
+
+        localStorage.setItem ("carrito" , JSON.stringify(carrito) );
+    } else {
+
+        const carrito = JSON.parse(ls);
+        const siExisteProducto = carrito.findIndex((ep) => {
+            return ep.nombre === porductoASumarse.nombre;
+        });
+        if (siExisteProducto === -1) {
+            carrito.push(porductoASumarse);
+
+        } else {
+            carrito[siExisteProducto].cantidad += parseInt(cantidad);
+        }
+        localStorage.setItem ("carrito" , JSON.stringify(carrito) );
+    }
+};
 
 
 const carrito = document.getElementById("listacarrito");
 
 carrito.addEventListener("click", () => {
-    console.log("se hizo click");
+    const cantidad = cantCarrito.value;
+    console.log(`agregaste ${cantidad} de ${producto.nombre}`);
+    //agregar al LS
+    agregarProdEnLs (producto, cantidad);
 });
 
 ///clases
@@ -152,9 +181,16 @@ function renderProductos (productos){
         button.className = "botonMat";
         button.innerText = "Comprar Materiales";
 
+        const cantCarrito = document.createElement("input");
+        cantCarrito.type = "number";
+        cantCarrito.className = "form-control";
+        cantCarrito.value = "1";
+
+
+
         //insertando elementos
 
-        divMayor.append (h3 , p , button);
+        divMayor.append (h3 , p , button , cantCarrito);
         article.append (divMayor);
         contenedordosid.append(article);
 
@@ -176,6 +212,8 @@ const moscasymateriales = [
     new producto ("moscas" , 200, 30),
     
 ];
+
+
 
 //json
 
